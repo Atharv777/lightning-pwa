@@ -107,7 +107,7 @@ export default function CreatePasswordStep() {
                         placeholder="Confirm password"
                     />
 
-                    {confirmPassword && !passwordsMatch && <p className="text-xs text-red-400 mt-1">Passwords don't match</p>}
+                    {confirmPassword && !passwordsMatch && <p className="text-xs text-red-400 mt-1">Passwords don&apos;t match</p>}
                 </div>
             </div>
 

@@ -28,7 +28,7 @@ export default function WelcomeStep() {
                     <div className="w-6 h-6 rounded-full bg-zinc-900 flex items-center justify-center text-white">3</div>
                     <div>
                         <p className="text-white mb-1">Instant and Offline Payments</p>
-                        <p>Settle payments instantly, even when you're offline.</p>
+                        <p>Settle payments instantly, even when you&apos;re offline.</p>
                     </div>
                 </div>
             </div>

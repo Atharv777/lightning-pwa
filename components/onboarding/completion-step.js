@@ -12,7 +12,7 @@ export default function CompletionStep() {
                 <h3 className="text-2xl font-light text-white mb-4">Your wallet is ready</h3>
 
                 <p className="text-zinc-400">
-                    Your wallet has been imported and your Lightning Network channel is being established. You're now ready to
+                    Your wallet has been imported and your Lightning Network channel is being established. You&apos;re now ready to
                     make instant transactions.
                 </p>
             </div>
