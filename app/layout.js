@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
                 <link rel="manifest" href="/manifest.json" />
             </head>
             <body
-                className={`${inter.variable} antialiased`}
+                className={`${inter.variable} antialiased dark`}
             >
                 {children}
             </body>

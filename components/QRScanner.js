@@ -5,9 +5,7 @@ import jsQR from "jsqr"
 import { motion, AnimatePresence } from "framer-motion"
 import { Scan, Check, Camera } from "lucide-react"
 
-import InstallPWA from "@/components/install-pwa"
-
-export default function QRScanner() {
+export default function QRScanner({ withText }) {
     const videoRef = useRef(null)
     const canvasRef = useRef(null)
     const [result, setResult] = useState("")
@@ -97,7 +95,6 @@ export default function QRScanner() {
                 navigator.vibrate([200, 100, 200])
             }
 
-            // Auto-dismiss the success overlay after 2 seconds
             setTimeout(() => {
                 setScanned(false)
             }, 2000)
@@ -119,8 +116,7 @@ export default function QRScanner() {
 
     return (
         <>
-            <div className="relative z-10 w-full max-w-md flex flex-col items-center">
-                {/* <InstallPWA /> */}
+            <div className="relative z-10 w-full max-w-xs flex flex-col items-center">
 
                 <AnimatePresence mode="wait">
                     {result
@@ -133,7 +129,7 @@ export default function QRScanner() {
                                 exit={{ opacity: 0 }}
                                 className="w-full flex flex-col items-center"
                             >
-                                <div className="relative w-full max-w-md aspect-square shadow-[0_0_25px_rgba(0,0,0,0.3)]">
+                                <div className="relative w-full max-w-xs aspect-square shadow-[0_0_25px_rgba(0,0,0,0.3)]">
                                     <video ref={videoRef} className="hidden" playsInline muted />
                                     <canvas ref={canvasRef} className="w-full h-full object-cover rounded-xl" />
 
@@ -163,16 +159,19 @@ export default function QRScanner() {
                                         </div>
                                     )}
                                 </div>
-
-                                <motion.div
-                                    className={`mt-4 flex items-center text-white/50 text-sm ${scanning ? "animate-pulse" : ""}`}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.3 }}
-                                >
-                                    <Scan className="h-4 w-4 mr-2" />
-                                    <p>{scanning ? "Align QR code within the frame" : "Initializing camera..."}</p>
-                                </motion.div>
+                                {
+                                    withText && (
+                                        <motion.div
+                                            className={`mt-8 flex items-center text-white/50 text-sm ${scanning ? "animate-pulse" : ""}`}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ delay: 0.3 }}
+                                        >
+                                            <Scan className="h-4 w-4 mr-2" />
+                                            <p>{scanning ? "Align QR code within the frame" : "Initializing camera..."}</p>
+                                        </motion.div>
+                                    )
+                                }
                             </motion.div>
                         )}
                 </AnimatePresence>

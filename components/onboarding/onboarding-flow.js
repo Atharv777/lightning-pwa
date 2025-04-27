@@ -1,0 +1,141 @@
+"use client"
+
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ArrowRight, ArrowLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import WelcomeStep from "./welcome-step"
+import CompletionStep from "./completion-step"
+import WalletImportStep from "./wallet-import-step"
+import LightningChannelStep from "./lightning-channel-step"
+import CreatePasswordStep from "./create-password-step"
+
+export default function OnboardingFlow() {
+    const [step, setStep] = useState(0)
+    const [direction, setDirection] = useState(0)
+
+    const steps = [
+        {
+            title: "Welcome",
+            component: <WelcomeStep />,
+        },
+        {
+            title: "Import Wallet",
+            component: <WalletImportStep />,
+        },
+        {
+            title: "Create Password",
+            component: <CreatePasswordStep />,
+        },
+        {
+            title: "Fund Channel",
+            component: <LightningChannelStep />,
+        },
+        {
+            title: "Complete",
+            component: <CompletionStep />,
+        },
+    ]
+
+    const nextStep = () => {
+        if (step < steps.length - 1) {
+            setDirection(1)
+            setStep(step + 1)
+        }
+    }
+
+    const prevStep = () => {
+        if (step > 0) {
+            setDirection(-1)
+            setStep(step - 1)
+        }
+    }
+
+    const variants = {
+        enter: (direction) => ({
+            x: direction > 0 ? 250 : -250,
+            opacity: 0,
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+        },
+        exit: (direction) => ({
+            x: direction < 0 ? 250 : -250,
+            opacity: 0,
+        }),
+    }
+
+    return (
+        <div className="w-full max-w-sm md:max-w-md mx-auto flex-1 flex flex-col justify-between max-h-[650px]">
+
+            <div className="flex flex-col gap-10">
+                <div className="flex justify-center">
+                    <div className="flex items-center gap-2">
+                        <h1 className="text-xl font-light tracking-tight text-white">Lightning</h1>
+                    </div>
+                </div>
+
+                <div className="flex justify-center">
+                    <div className="flex space-x-2 flex-1">
+                        {steps.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => {
+                                    setDirection(index > step ? 1 : -1)
+                                    setStep(index)
+                                }}
+                                className={`h-[2px] min-w-12 flex-1 transition-all duration-300 ${index === step ? "bg-white" : index < step ? "bg-zinc-500" : "bg-zinc-800"
+                                    }`}
+                                aria-label={`Go to step ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Content */}
+                <div className="min-h-[400px] flex flex-col">
+                    <h2 className="text-sm font-light uppercase tracking-widest text-zinc-400 mb-5">{steps[step].title}</h2>
+
+                    <AnimatePresence custom={direction} mode="wait">
+                        <motion.div
+                            key={step}
+                            custom={direction}
+                            variants={variants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{
+                                x: { type: "spring", stiffness: 500, damping: 40 },
+                                opacity: { duration: 0.2 },
+                            }}
+                            className="flex-1 flex flex-col"
+                        >
+                            {steps[step].component}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </div>
+
+            <div className="flex justify-between mt-auto">
+                <Button
+                    variant="ghost"
+                    onClick={prevStep}
+                    disabled={step === 0}
+                    className={`text-zinc-400 hover:text-white hover:bg-transparent ${step === 0 ? "opacity-0" : ""}`}
+                >
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                </Button>
+
+                <Button
+                    onClick={nextStep}
+                    className="bg-white hover:bg-zinc-200 text-black rounded-full px-6"
+                    disabled={step === steps.length - 1}
+                >
+                    {step === steps.length - 1 ? "Start" : "Next"}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+            </div>
+        </div>
+    )
+}
