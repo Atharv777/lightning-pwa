@@ -39,8 +39,5 @@ export default withPWA({
                 cacheName: 'static-resources',
             },
         },
-    ],
-    customWorker: {
-        src: './sw.js',
-    },
+    ]
 })(nextConfig);
