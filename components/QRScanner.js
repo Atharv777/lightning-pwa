@@ -203,6 +203,8 @@ export default function QRScanner({ withText, handleRequest }) {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <p>{result}</p>
         </>
     )
 }
