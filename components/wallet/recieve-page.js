@@ -121,7 +121,7 @@ export default function ReceivePage({ goBack, walletData }) {
                         <li className="flex items-center gap-2 text-xs">
                             <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
                             <span className="text-zinc-500">
-                                Click "Scan Lightning Invoice" to open QR Scanner
+                                Click &ldquo;Scan Lightning Invoice&rdquo; to open QR Scanner
                             </span>
                         </li>
                         <li className="flex items-center gap-2 text-xs">
