@@ -23,7 +23,7 @@ export default function WalletUnlock({ onUnlock, setPrivateKey }) {
             } else {
                 const data = await JSON.parse(localStorage.getItem("user_private_info_encrypted"))
                 const decryptedData = await decryptPrivateKey(data.encrypted_data, password)
-                if (decryptedData && password.trim() === data.password) {
+                if (decryptedData && password === data.pass) {
                     setPrivateKey(decryptedData)
                     onUnlock()
                 }
