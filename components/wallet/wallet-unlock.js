@@ -5,9 +5,9 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { LockIcon, AlertCircle } from "lucide-react"
+import { decryptPrivateKey } from "@/lib/encrypt-decrypt"
 
-
-export default function WalletUnlock({ onUnlock }) {
+export default function WalletUnlock({ onUnlock, setPrivateKey }) {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
@@ -18,12 +18,18 @@ export default function WalletUnlock({ onUnlock }) {
         setIsLoading(true)
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-
             if (password.trim() === "") {
                 setError("Please enter your password")
             } else {
-                onUnlock()
+                const data = localStorage.getItem("user_private_info_encrypted")
+                const decryptedData = await decryptPrivateKey(data.encrypted_data, password)
+                if (decryptedData && password.trim() === data.password) {
+                    setPrivateKey(decryptedData)
+                    onUnlock()
+                }
+                else {
+                    setError("Incorrect Password!")
+                }
             }
         } catch (err) {
             setError("Failed to unlock wallet. Please try again.")

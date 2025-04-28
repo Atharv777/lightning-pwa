@@ -71,11 +71,11 @@ export default function OnboardingFlow() {
         if (step === 2 && passwordValid) {
             if (privKey.length >= 64) {
                 const encrypted_data = await encryptPrivateKey(privKey, password)
-                localStorage.setItem("user_private_info_encrypted", encrypted_data)
+                localStorage.setItem("user_private_info_encrypted", { encrypted_data, pass: password })
             }
             else {
                 const encrypted_data = await encryptPrivateKey(phraseWords.join(" "), password)
-                localStorage.setItem("user_private_info_encrypted", encrypted_data)
+                localStorage.setItem("user_private_info_encrypted", { encrypted_data, pass: password })
             }
         }
 
