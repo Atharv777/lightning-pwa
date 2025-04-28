@@ -22,9 +22,7 @@ export default function ReceivePage({ goBack, walletData }) {
 
     const onScan = (data) => {
         console.log(data)
-        setTimeout(() => {
-            setCurrentStep("3")
-        }, 1800);
+        setCurrentStep("3")
     }
 
     const getQrValue = () => {
