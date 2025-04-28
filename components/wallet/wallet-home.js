@@ -79,12 +79,7 @@ export default function WalletHome({ onLock }) {
                     >
                         <header className="p-4 flex justify-between items-center border-b border-zinc-800/50">
                             <div className="flex items-center gap-2">
-                                <h1 className="text-base font-light tracking-tight text-white montserrat"><span className="text-lg">⚡</span>Blaze Pay</h1>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <button onClick={onLock} className="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center">
-                                    <Settings className="h-4 w-4 text-zinc-400" />
-                                </button>
+                                <h1 className="text-lg font-light tracking-tight text-white montserrat"><span className="text-xl">⚡</span>Blaze Pay</h1>
                             </div>
                         </header>
 
@@ -126,38 +121,6 @@ export default function WalletHome({ onLock }) {
                                         </div>
                                         <span className="text-xs">Receive</span>
                                     </button>
-                                    {/* <button className="flex flex-col items-center justify-center bg-zinc-900/70 hover:bg-zinc-800/70 transition-colors rounded-xl py-4 border border-zinc-800/50">
-                                        <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center mb-2">
-                                            <Repeat className="h-4 w-4 text-white" />
-                                        </div>
-                                        <span className="text-xs">Swap</span>
-                                    </button> */}
-                                </div>
-                            </div>
-
-                            <div className="bg-zinc-900/50 rounded-lg p-3 mb-6 border border-zinc-800/50">
-                                <div className="flex items-center justify-between mb-3">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center">
-                                            <Zap className="h-3 w-3 text-yellow-400" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-sm font-medium">Lightning Network</h3>
-                                            <p className="text-xs text-zinc-400">Instant transactions</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-sm font-medium">{walletData.lightningBalance} BLZ</div>
-                                        <div className="text-xs text-zinc-400">${walletData.lightningUsdBalance}</div>
-                                    </div>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button className="flex-1 py-1.5 px-3 text-xs border border-zinc-800 rounded-md hover:bg-zinc-800/50 transition-colors">
-                                        Open Channel
-                                    </button>
-                                    <button className="flex-1 py-1.5 px-3 text-xs border border-zinc-800 rounded-md hover:bg-zinc-800/50 transition-colors">
-                                        Close Channel
-                                    </button>
                                 </div>
                             </div>
 
@@ -196,10 +159,7 @@ export default function WalletHome({ onLock }) {
                                         </div>
 
                                         <div className="text-center py-6">
-                                            <p className="text-zinc-500 text-xs">No other assets in this wallet</p>
-                                            <button className="text-white text-xs mt-1 flex items-center justify-center mx-auto hover:underline">
-                                                Add tokens <ExternalLink className="h-3 w-3 ml-1" />
-                                            </button>
+                                            <p className="text-zinc-500 text-xs">No other assets supported byt this wallet</p>
                                         </div>
                                     </div>
                                 </TabsContent>
@@ -209,8 +169,6 @@ export default function WalletHome({ onLock }) {
                                 </TabsContent>
                             </Tabs>
                         </main>
-
-                        <WalletNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
                     </motion.div>
 
