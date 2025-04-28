@@ -69,8 +69,14 @@ export default function OnboardingFlow() {
 
     const nextStep = async () => {
         if (step === 2 && passwordValid) {
-            const encrypted_data = await encryptPrivateKey(privKey, password)
-            localStorage.setItem("user_private_info_encrypted", encrypted_data)
+            if (privKey.length >= 64) {
+                const encrypted_data = await encryptPrivateKey(privKey, password)
+                localStorage.setItem("user_private_info_encrypted", encrypted_data)
+            }
+            else {
+                const encrypted_data = await encryptPrivateKey(phraseWords.join(" "), password)
+                localStorage.setItem("user_private_info_encrypted", encrypted_data)
+            }
         }
 
         if (step < steps.length - 1) {
