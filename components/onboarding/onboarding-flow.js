@@ -9,7 +9,6 @@ import CompletionStep from "./completion-step"
 import WalletImportStep from "./wallet-import-step"
 import LightningChannelStep from "./lightning-channel-step"
 import CreatePasswordStep from "./create-password-step"
-import { decryptPrivateKey, encryptPrivateKey } from "@/lib/encrypt-decrypt"
 
 export default function OnboardingFlow() {
     const [step, setStep] = useState(0)
