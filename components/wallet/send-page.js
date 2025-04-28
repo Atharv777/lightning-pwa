@@ -154,6 +154,12 @@ export default function SendPage({ goBack, walletData }) {
                                         <QRCode value={invoiceData} size={250} />
                                     </div>
                                 </div>
+                                <Label className="text-zinc-400">Lightning Invoice</Label>
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className="bg-zinc-900 p-3 rounded-lg flex-1 text-sm break-all">
+                                        lnbc1500n1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspk28uwq
+                                    </div>
+                                </div>
                             </>
                             : <>
                                 <main className="flex-1 overflow-y-auto p-4 no-scrollbar">
@@ -291,7 +297,7 @@ export default function SendPage({ goBack, walletData }) {
                         <li className="flex items-center gap-2 text-xs">
                             <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
                             <span className="text-zinc-500">
-                                Scan or Enter receiver's address
+                                Scan or Enter receiver&apos;s address
                             </span>
                         </li>
                         <li className="flex items-center gap-2 text-xs">
@@ -357,36 +363,3 @@ const ScannerArea = ({ goBack, onScan }) => {
         </div>
     )
 }
-
-
-// <div className="mt-0 space-y-6">
-//     <div className="flex justify-center">
-//         <div className="bg-white p-4 rounded-lg">
-//             <QRCode value={getQrValue()} size={180} />
-//         </div>
-//     </div>
-
-//     <div className="space-y-2">
-//         <Label className="text-zinc-400">Lightning Invoice</Label>
-//         <div className="flex flex-col items-center gap-2">
-//             <div className="bg-zinc-900 p-3 rounded-lg flex-1 text-sm break-all">
-//                 lnbc1500n1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspk28uwq
-//             </div>
-//             <button
-//                 onClick={copyAddress}
-//                 className="w-full py-2 flex items-center justify-center bg-zinc-900 rounded-lg text-zinc-400 hover:text-white text-sm"
-//             >
-//                 {copiedAddress
-//                     ? <>
-//                         <CheckCircle2 className="h-3 w-3 text-green-400 mr-2" />
-//                         <span>Copied</span>
-//                     </>
-//                     : <>
-//                         <Copy className="h-3 w-3 mr-2" />
-//                         <span>Copy</span>
-//                     </>
-//                 }
-//             </button>
-//         </div>
-//     </div>
-// </div>
