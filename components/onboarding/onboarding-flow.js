@@ -9,6 +9,7 @@ import CompletionStep from "./completion-step"
 import WalletImportStep from "./wallet-import-step"
 import LightningChannelStep from "./lightning-channel-step"
 import CreatePasswordStep from "./create-password-step"
+import { decryptPrivateKey, encryptPrivateKey } from "@/lib/encrypt-decrypt"
 
 export default function OnboardingFlow() {
     const [step, setStep] = useState(0)
@@ -64,7 +65,42 @@ export default function OnboardingFlow() {
         },
     ]
 
-    const nextStep = () => {
+    async function encryptPrivateKey(privateKey, password, crypto) {
+        const enc = new TextEncoder();
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const passwordKey = await crypto.subtle.importKey('raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']);
+        const aesKey = await crypto.subtle.deriveKey(
+            { name: 'PBKDF2', salt, iterations: 250000, hash: 'SHA-256' },
+            passwordKey,
+            { name: 'AES-GCM', length: 256 },
+            false,
+            ['encrypt']
+        );
+
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+
+        const ciphertext = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv },
+            aesKey,
+            enc.encode(privateKey)
+        );
+
+        const encrypted = {
+            salt: Array.from(salt),
+            iv: Array.from(iv),
+            ciphertext: Array.from(new Uint8Array(ciphertext)),
+        };
+
+        return JSON.stringify(encrypted);
+    }
+
+
+    const nextStep = async () => {
+        if (step === 2 && passwordValid) {
+            const encrypted_data = await encryptPrivateKey(privKey, password, window.crypto)
+            localStorage.setItem("user_private_info_encrypted", encrypted_data)
+        }
+
         if (step < steps.length - 1) {
             setDirection(1)
             setStep(step + 1)
@@ -96,12 +132,12 @@ export default function OnboardingFlow() {
     const isNextDisabled = step === steps.length - 1 || !steps[step].validate()
 
     return (
-        <div className="w-full max-w-sm md:max-w-md mx-auto flex-1 flex flex-col justify-between max-h-[650px]">
+        <div className="w-full max-w-sm md:max-w-md mx-auto flex-1 flex flex-col justify-between py-5 md:py-0 max-h-screen md:max-h-[650px]">
 
             <div className="flex flex-col gap-10">
                 <div className="flex justify-center">
                     <div className="flex items-center gap-2">
-                        <h1 className="text-xl font-light tracking-tight text-white">Lightning</h1>
+                        <h1 className="text-xl font-light tracking-tight text-white montserrat"><span className="text-2xl">⚡</span>Blaze Pay</h1>
                     </div>
                 </div>
 
@@ -147,7 +183,7 @@ export default function OnboardingFlow() {
                 </div>
             </div>
 
-            <div className="flex justify-between mt-auto">
+            <div className="flex justify-between mt-auto pt-5">
                 <Button
                     variant="ghost"
                     onClick={prevStep}

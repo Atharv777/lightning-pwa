@@ -4,7 +4,7 @@ export default function WelcomeStep() {
             <h3 className="text-2xl font-light text-white">A simpler, faster way to transact on Stellar</h3>
 
             <p className="text-zinc-400 leading-relaxed">
-                Lightning brings the power of the Lightning Network to the Stellar blockchain — enabling secure, instant, and even offline payments. With Lightning, you stay fully in control of your assets, with complete privacy and direct ownership at every step.
+                Blaze Pay brings the power of the Lightning Network to the Stellar blockchain — enabling secure, instant, and even offline payments. With Blaze Pay, you stay fully in control of your assets, with complete privacy and direct ownership at every step.
             </p>
 
             <div className="mt-5 space-y-6 text-sm text-zinc-400">

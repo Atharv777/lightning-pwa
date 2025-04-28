@@ -42,6 +42,9 @@ export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, 
         validateInput()
     }, [activeTab, touched])
 
+    // const getLockedData = await security.storeMnemonic(acc.code, password);
+    // chrome.storage.local.set({ address: acc.accounts[0].address });
+
     const validateInput = () => {
         if (activeTab === "phrase") {
             const emptyWords = phraseWords.filter((word) => !word.trim()).length

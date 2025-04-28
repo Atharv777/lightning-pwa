@@ -1,8 +1,12 @@
-import { Inter } from "next/font/google";
+import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
     variable: "--font-inter",
+    subsets: ["latin"],
+});
+const montserrat = Montserrat({
+    variable: "--font-montserrat",
     subsets: ["latin"],
 });
 
@@ -18,7 +22,7 @@ export default function RootLayout({ children }) {
                 <link rel="manifest" href="/manifest.json" />
             </head>
             <body
-                className={`${inter.variable} antialiased dark`}
+                className={`${inter.variable} ${montserrat.variable} antialiased dark`}
             >
                 {children}
             </body>

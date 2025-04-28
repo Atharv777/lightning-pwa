@@ -9,6 +9,11 @@ export default function InstallPWA() {
     const [isInstalled, setIsInstalled] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
 
+    const isIOS = () => {
+        const ua = window.navigator.userAgent
+        return /iPhone|iPad|iPod/i.test(ua)
+    }
+
     useEffect(() => {
         const checkIsMobile = () => {
             const ua = navigator.userAgent
@@ -23,7 +28,7 @@ export default function InstallPWA() {
         }
 
         const handleBeforeInstallPrompt = (e) => {
-            if (!checkIsMobile()) return
+            if (!checkIsMobile() || isIOS()) return
 
             e.preventDefault()
             setDeferredPrompt(e)
@@ -73,18 +78,30 @@ export default function InstallPWA() {
                         <X className="h-5 w-5" />
                     </button>
                 </div>
-                <p className="text-sm text-white/70 mb-4">
-                    Install this app on your device for quick access even when offline.
-                </p>
-                <div className="flex justify-end">
-                    <button
-                        onClick={handleInstallClick}
-                        className="px-4 py-2 bg-white text-black rounded-lg font-medium flex items-center"
-                    >
-                        <Download className="h-4 w-4 mr-2" />
-                        Install
-                    </button>
-                </div>
+
+
+                {isIOS() ? (
+                    <>
+                        <p className="text-sm text-white/70 mb-4">
+                            To install this app, tap <strong>Share</strong> and then <strong>Add to Home Screen</strong>.
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <p className="text-sm text-white/70 mb-4">
+                            Install this app on your device for quick access even when offline.
+                        </p>
+                        <div className="flex justify-end">
+                            <button
+                                onClick={handleInstallClick}
+                                className="px-4 py-2 bg-white text-black rounded-lg font-medium flex items-center"
+                            >
+                                <Download className="h-4 w-4 mr-2" />
+                                Install
+                            </button>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     )
