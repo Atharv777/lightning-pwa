@@ -17,7 +17,6 @@ export default function OnboardingFlow() {
     const [phraseWords, setPhraseWords] = useState(Array(12).fill(""))
     const [privKey, setPrivKey] = useState("")
 
-    const [importMethod, setImportMethod] = useState("phrase")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [channelAmount, setChannelAmount] = useState(0.001)
@@ -25,15 +24,6 @@ export default function OnboardingFlow() {
     const [importValid, setImportValid] = useState(false)
     const [passwordValid, setPasswordValid] = useState(false)
     const [channelValid, setChannelValid] = useState(true)
-
-    useEffect(() => {
-        if (importMethod === "phrase") {
-            const emptyWords = phraseWords.filter((word) => !word.trim()).length
-            setImportValid(emptyWords === 0)
-        } else {
-            setImportValid(/^[0-9a-fA-F]{64}$/.test(privKey))
-        }
-    }, [phraseWords, privKey, importMethod])
 
     const steps = [
         {
@@ -49,6 +39,7 @@ export default function OnboardingFlow() {
                     setPhraseWords={setPhraseWords}
                     privKey={privKey}
                     setPrivKey={setPrivKey}
+                    setImportValid={setImportValid}
                 />
             ),
             validate: () => importValid,

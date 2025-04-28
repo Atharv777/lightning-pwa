@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import QRScanner from "../QRScanner"
 import { ScanQrCode, Pencil, AlertCircle } from "lucide-react"
 
-export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, phraseWords }) {
+export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, phraseWords, setImportValid }) {
     const [activeTab, setActiveTab] = useState("phrase")
     const [error, setError] = useState("")
     const [wantToScan, setWantToScan] = useState(false)
@@ -48,18 +48,24 @@ export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, 
 
             if (emptyWords === 12) {
                 setError("Please enter your recovery phrase")
+                setImportValid(false)
             } else if (emptyWords > 0) {
                 setError(`Please fill all words (${emptyWords} remaining)`)
+                setImportValid(false)
             } else {
                 setError("")
+                setImportValid(true)
             }
         } else {
             if (!privKey) {
                 setError("Please enter your private key")
+                setImportValid(false)
             } else if (!/^[0-9a-fA-F]{64}$/.test(privKey)) {
                 setError("Invalid private key format")
+                setImportValid(false)
             } else {
                 setError("")
+                setImportValid(true)
             }
         }
     }

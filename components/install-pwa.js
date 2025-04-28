@@ -5,7 +5,7 @@ import { Download, X } from "lucide-react"
 
 export default function InstallPWA() {
     const [deferredPrompt, setDeferredPrompt] = useState(null)
-    const [showInstallBanner, setShowInstallBanner] = useState(false)
+    const [showInstallBanner, setShowInstallBanner] = useState(true)
     const [isInstalled, setIsInstalled] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
 
@@ -67,7 +67,7 @@ export default function InstallPWA() {
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 p-4 safe-bottom">
             <div className="install-banner bg-white/10 backdrop-blur-md rounded-xl p-4 shadow-lg border border-white/20">
-                <div className="flex justify-between items-start mb-3">
+                <div className="flex justify-between items-start mb-3 text-white">
                     <h3 className="font-medium">Install QR Scanner</h3>
                     <button onClick={dismissBanner} className="p-1">
                         <X className="h-5 w-5" />
