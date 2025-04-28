@@ -69,8 +69,10 @@ export default function SendPage({ goBack, walletData }) {
     }
 
     const handleQrScan = (result) => {
-        setRecipient(result)
-        closeQrScanner()
+        setTimeout(() => {
+            setRecipient(result)
+            closeQrScanner()
+        }, 1800);
     }
 
     const pageVariants = {
