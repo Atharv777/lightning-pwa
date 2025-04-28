@@ -1,21 +1,73 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import QRScanner from "../QRScanner"
-import { ScanQrCode, Pencil } from "lucide-react"
+import { ScanQrCode, Pencil, AlertCircle } from "lucide-react"
 
-export default function WalletImportStep() {
+export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, phraseWords }) {
     const [activeTab, setActiveTab] = useState("phrase")
+    const [error, setError] = useState("")
     const [wantToScan, setWantToScan] = useState(false)
+    const [touched, setTouched] = useState(false)
+
+    const handlePaste = (e) => {
+        const pastedText = e.clipboardData.getData("Text").trim()
+        const words = pastedText.split(/\s+/)
+
+        if (words.length === 12) {
+            e.preventDefault()
+            setPhraseWords(words)
+        }
+    }
+
+    const handlePhraseChange = (index, value) => {
+        const onlyLetters = value.replace(/[^a-zA-Z]/g, "")
+        const updated = [...phraseWords]
+        updated[index] = onlyLetters
+        setPhraseWords(updated)
+        setTouched(true)
+    }
+
+    const handlePrivKeyChange = (value) => {
+        setPrivKey(value)
+        setTouched(true)
+    }
+
+    useEffect(() => {
+        if (!touched) return
+        validateInput()
+    }, [activeTab, touched])
+
+    const validateInput = () => {
+        if (activeTab === "phrase") {
+            const emptyWords = phraseWords.filter((word) => !word.trim()).length
+
+            if (emptyWords === 12) {
+                setError("Please enter your recovery phrase")
+            } else if (emptyWords > 0) {
+                setError(`Please fill all words (${emptyWords} remaining)`)
+            } else {
+                setError("")
+            }
+        } else {
+            if (!privKey) {
+                setError("Please enter your private key")
+            } else if (!/^[0-9a-fA-F]{64}$/.test(privKey)) {
+                setError("Invalid private key format")
+            } else {
+                setError("")
+            }
+        }
+    }
 
     return (
         <div className="flex flex-col flex-1">
 
-            <Tabs defaultValue="phrase" className="w-full" onValueChange={setActiveTab}>
+            <Tabs defaultValue="phrase" className="w-full" onValueChange={(value) => { setActiveTab(value); setError("") }}>
                 <TabsList className="grid w-full grid-cols-2 bg-transparent border-b border-zinc-800 rounded-none">
                     <TabsTrigger
                         value="phrase"
@@ -40,7 +92,14 @@ export default function WalletImportStep() {
                         <div className="grid grid-cols-3 gap-2">
                             {Array.from({ length: 12 }).map((_, i) => (
                                 <div key={i} className="relative">
-                                    <Input className="bg-zinc-900 border-zinc-800 text-white h-10 pl-8 focus:border-none" placeholder="word" />
+                                    <Input
+                                        className="bg-zinc-900 border-zinc-800 text-white h-10 pl-8 focus:border-none"
+                                        placeholder="word"
+                                        value={phraseWords[i]}
+                                        onChange={(e) => handlePhraseChange(i, e.target.value)}
+                                        onPaste={i === 0 ? handlePaste : undefined}
+                                        onBlur={() => { setTouched(true); validateInput() }}
+                                    />
                                     <span className="absolute left-3 top-2.5 text-zinc-500 text-xs">{i + 1}.</span>
                                 </div>
                             ))}
@@ -71,6 +130,10 @@ export default function WalletImportStep() {
                                                 id="privateKey"
                                                 className="bg-zinc-900 border-zinc-800 text-white font-mono"
                                                 placeholder="Enter your private key"
+                                                value={privKey}
+                                                onChange={(e) => handlePrivKeyChange(e.target.value)}
+                                                maxLength={64}
+                                                onBlur={() => { setTouched(true); validateInput() }}
                                             />
                                             <p className="text-xs text-zinc-500 mt-1">Format: hexadecimal string (64 characters)</p>
                                         </div>
@@ -88,6 +151,13 @@ export default function WalletImportStep() {
                     }
                 </TabsContent>
             </Tabs >
+
+            {error && (
+                <div className="flex items-center gap-2 mt-4 text-red-400 text-sm">
+                    <AlertCircle className="h-4 w-4" />
+                    <p>{error}</p>
+                </div>
+            )}
 
             {
                 wantToScan

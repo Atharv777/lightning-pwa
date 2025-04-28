@@ -1,13 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { EyeClosedIcon, EyeIcon, LockIcon } from "lucide-react"
 
-export default function CreatePasswordStep() {
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
+export default function CreatePasswordStep({ password, setPassword, confirmPassword, setConfirmPassword, setPasswordValid }) {
+
     const [passwordVisible, setPasswordVisible] = useState(false)
 
     // Password strength calculation
@@ -30,6 +29,11 @@ export default function CreatePasswordStep() {
     const passwordStrength = calculateStrength(password)
     const passwordsMatch = password === confirmPassword
     const passwordValid = passwordStrength >= 3 && passwordsMatch && password.length > 0
+
+    useEffect(() => {
+        const isValid = passwordStrength >= 3 && passwordsMatch && password.length > 0
+        setPasswordValid(isValid)
+    }, [password, confirmPassword, passwordStrength, passwordsMatch, setPasswordValid])
 
     // Strength indicator labels
     const strengthLabels = ["Weak", "Fair", "Good", "Strong"]

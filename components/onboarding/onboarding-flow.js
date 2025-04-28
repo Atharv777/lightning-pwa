@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -14,26 +14,62 @@ export default function OnboardingFlow() {
     const [step, setStep] = useState(0)
     const [direction, setDirection] = useState(0)
 
+    const [phraseWords, setPhraseWords] = useState(Array(12).fill(""))
+    const [privKey, setPrivKey] = useState("")
+
+    const [importMethod, setImportMethod] = useState("phrase")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [channelAmount, setChannelAmount] = useState(0.001)
+
+    const [importValid, setImportValid] = useState(false)
+    const [passwordValid, setPasswordValid] = useState(false)
+    const [channelValid, setChannelValid] = useState(true)
+
+    useEffect(() => {
+        if (importMethod === "phrase") {
+            const emptyWords = phraseWords.filter((word) => !word.trim()).length
+            setImportValid(emptyWords === 0)
+        } else {
+            setImportValid(/^[0-9a-fA-F]{64}$/.test(privKey))
+        }
+    }, [phraseWords, privKey, importMethod])
+
     const steps = [
         {
             title: "Welcome",
             component: <WelcomeStep />,
+            validate: () => true,
         },
         {
             title: "Import Wallet",
-            component: <WalletImportStep />,
+            component: (
+                <WalletImportStep
+                    phraseWords={phraseWords}
+                    setPhraseWords={setPhraseWords}
+                    privKey={privKey}
+                    setPrivKey={setPrivKey}
+                />
+            ),
+            validate: () => importValid,
         },
         {
             title: "Create Password",
-            component: <CreatePasswordStep />,
-        },
-        {
-            title: "Fund Channel",
-            component: <LightningChannelStep />,
+            component: (
+                <CreatePasswordStep
+                    password={password}
+                    setPassword={setPassword}
+                    confirmPassword={confirmPassword}
+                    setConfirmPassword={setConfirmPassword}
+                    setPasswordValid={setPasswordValid}
+                />
+            ),
+            validate: () => passwordValid,
         },
         {
             title: "Complete",
             component: <CompletionStep />,
+            validate: () => true,
         },
     ]
 
@@ -66,6 +102,8 @@ export default function OnboardingFlow() {
         }),
     }
 
+    const isNextDisabled = step === steps.length - 1 || !steps[step].validate()
+
     return (
         <div className="w-full max-w-sm md:max-w-md mx-auto flex-1 flex flex-col justify-between max-h-[650px]">
 
@@ -82,11 +120,12 @@ export default function OnboardingFlow() {
                             <button
                                 key={index}
                                 onClick={() => {
-                                    setDirection(index > step ? 1 : -1)
-                                    setStep(index)
+                                    if (index <= step || steps[step].validate()) {
+                                        setDirection(index > step ? 1 : -1)
+                                        setStep(index)
+                                    }
                                 }}
-                                className={`h-[2px] min-w-12 flex-1 transition-all duration-300 ${index === step ? "bg-white" : index < step ? "bg-zinc-500" : "bg-zinc-800"
-                                    }`}
+                                className={`h-[2px] min-w-12 flex-1 transition-all duration-300 ${index === step ? "bg-white" : index < step ? "bg-zinc-500" : "bg-zinc-800"}`}
                                 aria-label={`Go to step ${index + 1}`}
                             />
                         ))}
@@ -129,8 +168,8 @@ export default function OnboardingFlow() {
 
                 <Button
                     onClick={nextStep}
-                    className="bg-white hover:bg-zinc-200 text-black rounded-full px-6"
-                    disabled={step === steps.length - 1}
+                    className={`${isNextDisabled ? "bg-zinc-700 text-zinc-300" : "bg-white hover:bg-zinc-200 text-black"} rounded-full px-6`}
+                    disabled={isNextDisabled}
                 >
                     {step === steps.length - 1 ? "Start" : "Next"}
                     <ArrowRight className="ml-2 h-4 w-4" />
