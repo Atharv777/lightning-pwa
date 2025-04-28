@@ -57,10 +57,10 @@ export default function TransactionList() {
                     <div className="flex items-center gap-3">
                         <div
                             className={`w-7 h-7 rounded-full flex items-center justify-center ${tx.type === "send"
-                                    ? "bg-red-900/30 text-red-400"
-                                    : tx.type === "receive"
-                                        ? "bg-green-900/30 text-green-400"
-                                        : "bg-yellow-900/30 text-yellow-400"
+                                ? "bg-red-900/30 text-red-400"
+                                : tx.type === "receive"
+                                    ? "bg-green-900/30 text-green-400"
+                                    : "bg-yellow-900/30 text-yellow-400"
                                 }`}
                         >
                             {tx.type === "send" ? (
@@ -79,7 +79,7 @@ export default function TransactionList() {
                     <div className="text-right">
                         <div className={`text-sm ${tx.type === "receive" ? "text-green-400" : ""}`}>
                             {tx.type === "receive" ? "+" : "-"}
-                            {tx.amount} BTC
+                            {tx.amount} BLZ
                         </div>
                         <div className="text-xs text-zinc-400">${tx.usdAmount}</div>
                     </div>

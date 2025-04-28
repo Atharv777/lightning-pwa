@@ -8,16 +8,21 @@ import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { AnimatePresence, motion } from "framer-motion"
 import QRScanner from "@/components/QRScanner"
+import QRCode from "react-qr-code"
+
 
 
 export default function SendPage({ goBack, walletData }) {
     const [amount, setAmount] = useState("")
     const [recipient, setRecipient] = useState("")
-    const [amountUnit, setAmountUnit] = useState("btc")
+    const [amountUnit, setAmountUnit] = useState("BLZ")
     const [feeLevel, setFeeLevel] = useState(1)
     const [sliderValue, setSliderValue] = useState([1])
     const [showQrScanner, setShowQrScanner] = useState(false)
     const [slideDirection, setSlideDirection] = useState(1)
+    const [isProcessing, setIsProcessing] = useState(false)
+    const [invoiceData, setInvoiceData] = useState(null)
+    const [showInvoiceQR, setShowInvoiceQR] = useState(false)
 
     const feeLevels = [
         { name: "Low", time: "~60 min", fee: 0.000005 },
@@ -37,19 +42,19 @@ export default function SendPage({ goBack, walletData }) {
         }
     }
 
-    const getBtcAmount = () => {
+    const getBLZAmount = () => {
         if (!amount) return 0
-        return amountUnit === "btc" ? Number.parseFloat(amount) : Number.parseFloat(amount) / 60000
+        return amountUnit === "BLZ" ? Number.parseFloat(amount) : Number.parseFloat(amount) / 60000
     }
 
     const getUsdAmount = () => {
         if (!amount) return 0
-        return amountUnit === "btc" ? Number.parseFloat(amount) * 60000 : Number.parseFloat(amount)
+        return amountUnit === "BLZ" ? Number.parseFloat(amount) * 60000 : Number.parseFloat(amount)
     }
 
     const isValidAmount = () => {
-        const btcAmount = getBtcAmount()
-        return btcAmount > 0 && btcAmount <= walletData.balance
+        const BLZAmount = getBLZAmount()
+        return BLZAmount > 0 && BLZAmount <= walletData.balance
     }
 
     const isValidRecipient = () => {
@@ -73,6 +78,15 @@ export default function SendPage({ goBack, walletData }) {
             setRecipient(result)
             closeQrScanner()
         }, 1800);
+    }
+
+    const handleGenerateInvoice = () => {
+        setIsProcessing(true)
+        setTimeout(() => {
+            setInvoiceData("lnbc1500n1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspk28uwq")
+            setIsProcessing(false)
+            setShowInvoiceQR(true)
+        }, 2000);
     }
 
     const pageVariants = {
@@ -127,98 +141,107 @@ export default function SendPage({ goBack, walletData }) {
                             <button onClick={goBack} className="text-zinc-400 hover:text-white">
                                 <ArrowLeft className="h-5 w-5" />
                             </button>
-                            <h1 className="text-lg font-light tracking-tight text-white">Send Bitcoin</h1>
+                            <h1 className="text-lg font-light tracking-tight text-white">Send BLZ</h1>
                         </div>
                     </header>
 
-                    <main className="flex-1 overflow-y-auto p-4 scrollbar-hide">
-                        <div className="space-y-6">
-                            {/* Recipient */}
-                            <div className="space-y-2">
-                                <Label htmlFor="recipient" className="text-zinc-400">
-                                    Recipient
-                                </Label>
-                                <div className="relative">
-                                    <Input
-                                        id="recipient"
-                                        placeholder="Bitcoin address"
-                                        className="bg-zinc-900 border-zinc-800 text-white pr-10"
-                                        value={recipient}
-                                        onChange={(e) => setRecipient(e.target.value)}
-                                    />
-                                    <button className="absolute right-3 top-2.5 text-zinc-400 hover:text-white" onClick={openQrScanner} >
-                                        <QrCodeScan className="h-4 w-4" />
-                                    </button>
-                                </div>
-                                {recipient && !isValidRecipient() && (
-                                    <div className="flex items-center gap-1 text-red-400 text-xs mt-1">
-                                        <AlertCircle className="h-3 w-3" />
-                                        <span>Invalid Bitcoin address</span>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Amount */}
-                            <div className="space-y-2">
-                                <div className="flex justify-between">
-                                    <Label htmlFor="amount" className="text-zinc-400">
-                                        Amount
-                                    </Label>
-                                    <div className="text-xs text-zinc-400">
-                                        Available: {walletData.balance} BTC (${walletData.usdBalance})
+                    {
+                        showInvoiceQR
+                            ? <>
+                                <Label className="text-zinc-500 text-sm mt-10 mx-4">Step 3: <span className="leading-[1.42] text-xs text-zinc-600">The receiver scans the invoice below</span></Label>
+                                <div className="flex justify-center mt-5">
+                                    <div className="bg-white p-4 rounded-lg">
+                                        <QRCode value={invoiceData} size={250} />
                                     </div>
                                 </div>
+                            </>
+                            : <>
+                                <main className="flex-1 overflow-y-auto p-4 no-scrollbar">
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="recipient" className="text-zinc-400">
+                                                Recipient
+                                            </Label>
+                                            <div className="relative">
+                                                <Input
+                                                    id="recipient"
+                                                    placeholder="Steller address"
+                                                    className="bg-zinc-900 border-zinc-800 text-white pr-10"
+                                                    value={recipient}
+                                                    onChange={(e) => setRecipient(e.target.value)}
+                                                />
+                                                <button className="absolute right-3 top-2.5 text-zinc-400 hover:text-white" onClick={openQrScanner} >
+                                                    <QrCodeScan className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                            {recipient && !isValidRecipient() && (
+                                                <div className="flex items-center gap-1 text-red-400 text-xs mt-1">
+                                                    <AlertCircle className="h-3 w-3" />
+                                                    <span>Invalid Stellar address</span>
+                                                </div>
+                                            )}
+                                        </div>
 
-                                <div className="relative">
-                                    <Input
-                                        id="amount"
-                                        placeholder="0.00"
-                                        className="bg-zinc-900 border-zinc-800 text-white text-right pr-16 text-lg"
-                                        value={amount}
-                                        onChange={handleAmountChange}
-                                    />
-                                    <div className="absolute right-3 top-2 flex items-center">
-                                        <button
-                                            onClick={() => setAmountUnit(amountUnit === "btc" ? "usd" : "btc")}
-                                            className="flex items-center gap-1 text-zinc-400 hover:text-white text-sm"
-                                        >
-                                            {amountUnit.toUpperCase()}
-                                            <ChevronDown className="h-3 w-3" />
-                                        </button>
-                                    </div>
-                                </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between">
+                                                <Label htmlFor="amount" className="text-zinc-400">
+                                                    Amount
+                                                </Label>
+                                                <div className="text-xs text-zinc-400">
+                                                    Available: {walletData.balance} BLZ (${walletData.usdBalance})
+                                                </div>
+                                            </div>
 
-                                <div className="flex justify-between text-xs text-zinc-400">
-                                    <span>
-                                        {amountUnit === "btc"
-                                            ? `≈ $${getUsdAmount().toLocaleString(undefined, { maximumFractionDigits: 2 })}`
-                                            : `≈ ${getBtcAmount().toFixed(8)} BTC`}
-                                    </span>
-                                    <button
-                                        onClick={() => {
-                                            if (amountUnit === "btc") {
-                                                setAmount(walletData.balance.toString())
-                                            } else {
-                                                setAmount(walletData.usdBalance.toString())
-                                            }
-                                        }}
-                                        className="text-white hover:underline"
-                                    >
-                                        Max
-                                    </button>
-                                </div>
+                                            <div className="relative">
+                                                <Input
+                                                    id="amount"
+                                                    placeholder="0.00"
+                                                    className="bg-zinc-900 border-zinc-800 text-white text-right pr-16 text-lg"
+                                                    value={amount}
+                                                    onChange={handleAmountChange}
+                                                />
+                                                <div className="absolute right-3 top-2 flex items-center">
+                                                    <button
+                                                        onClick={() => setAmountUnit(amountUnit === "BLZ" ? "usd" : "BLZ")}
+                                                        className="flex items-center gap-1 text-zinc-400 hover:text-white text-sm"
+                                                    >
+                                                        {amountUnit.toUpperCase()}
+                                                        <ChevronDown className="h-3 w-3" />
+                                                    </button>
+                                                </div>
+                                            </div>
 
-                                {amount && !isValidAmount() && (
-                                    <div className="flex items-center gap-1 text-red-400 text-xs">
-                                        <AlertCircle className="h-3 w-3" />
-                                        <span>
-                                            {getBtcAmount() <= 0 ? "Amount must be greater than 0" : "Insufficient funds for this transaction"}
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
+                                            <div className="flex justify-between text-xs text-zinc-400">
+                                                <span>
+                                                    {amountUnit === "BLZ"
+                                                        ? `≈ $${getUsdAmount().toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                                                        : `≈ ${getBLZAmount().toFixed(8)} BLZ`}
+                                                </span>
+                                                <button
+                                                    onClick={() => {
+                                                        if (amountUnit === "BLZ") {
+                                                            setAmount(walletData.balance.toString())
+                                                        } else {
+                                                            setAmount(walletData.usdBalance.toString())
+                                                        }
+                                                    }}
+                                                    className="text-white hover:underline"
+                                                >
+                                                    Max
+                                                </button>
+                                            </div>
 
-                            <div className="space-y-3">
+                                            {amount && !isValidAmount() && (
+                                                <div className="flex items-center gap-1 text-red-400 text-xs">
+                                                    <AlertCircle className="h-3 w-3" />
+                                                    <span>
+                                                        {getBLZAmount() <= 0 ? "Amount must be greater than 0" : "Insufficient funds for this transaction"}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* <div className="space-y-3">
                                 <div className="flex justify-between items-center">
                                     <Label className="text-zinc-400 flex items-center gap-1">
                                         Network Fee
@@ -240,7 +263,7 @@ export default function SendPage({ goBack, walletData }) {
                                     <div className="flex justify-between text-sm">
                                         <span className="text-zinc-400">Fee</span>
                                         <span className="text-white">
-                                            {feeLevels[feeLevel].fee} BTC (${(feeLevels[feeLevel].fee * 60000).toFixed(2)})
+                                            {feeLevels[feeLevel].fee} BLZ (${(feeLevels[feeLevel].fee * 60000).toFixed(2)})
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
@@ -248,36 +271,73 @@ export default function SendPage({ goBack, walletData }) {
                                         <span className="text-white">{feeLevels[feeLevel].time}</span>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className="bg-zinc-900 p-3 rounded-lg">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-zinc-400">Total</span>
-                                    <span className="text-white font-medium">
-                                        {amount ? (getBtcAmount() + feeLevels[feeLevel].fee).toFixed(8) : "0.00000000"} BTC
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
+                                        <div className="bg-zinc-900 p-3 rounded-lg">
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-zinc-400">Total</span>
+                                                <span className="text-white font-medium">
+                                                    {amount ? (getBLZAmount() + feeLevels[feeLevel].fee).toFixed(8) : "0.00000000"} BLZ
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </main>
+                            </>
+                    }
 
-                    <footer className="p-4 border-t border-zinc-800/50">
-                        <Button
-                            disabled={!canSend}
-                            className="w-full bg-white hover:bg-zinc-200 text-black rounded-full disabled:bg-zinc-700 disabled:text-zinc-400"
-                        >
-                            Send Bitcoin
-                        </Button>
-                    </footer>
+
+                    <ul className="space-y-1 mt-12 p-4">
+                        <li className="flex items-center gap-2 text-xs">
+                            <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                            <span className="text-zinc-500">
+                                Scan or Enter receiver's address
+                            </span>
+                        </li>
+                        <li className="flex items-center gap-2 text-xs">
+                            <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                            <span className="text-zinc-500">
+                                Enter amount and create a Lightning Invoice
+                            </span>
+                        </li>
+                        <li className="flex items-center gap-2 text-xs">
+                            <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                            <span className="text-zinc-500">
+                                Reciever scans the Lightning Invoice to complete the transaction
+                            </span>
+                        </li>
+                    </ul>
+
+                    {showInvoiceQR
+                        ? <footer className="p-4 border-t border-zinc-800/50">
+                            <Button onClick={goBack} className="w-full bg-white hover:bg-zinc-200 text-black rounded-full">
+                                Back to Wallet
+                            </Button>
+                        </footer>
+                        : <footer className="p-4 border-t border-zinc-800/50">
+                            <Button
+                                disabled={!canSend || isProcessing}
+                                onClick={handleGenerateInvoice}
+                                className="w-full bg-white hover:bg-zinc-200 text-black rounded-full disabled:bg-zinc-700 disabled:text-zinc-400"
+                            >
+                                {isProcessing ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    "Generate Lightning Invoice"
+                                )}
+                            </Button>
+                        </footer>
+                    }
                 </motion.div>
             )}
         </AnimatePresence>
     )
 }
 
-
 const ScannerArea = ({ goBack, onScan }) => {
-
     return (
         <div className="flex flex-col h-full">
             <header className="p-4 flex justify-between items-center border-b border-zinc-800/50">
@@ -297,3 +357,36 @@ const ScannerArea = ({ goBack, onScan }) => {
         </div>
     )
 }
+
+
+// <div className="mt-0 space-y-6">
+//     <div className="flex justify-center">
+//         <div className="bg-white p-4 rounded-lg">
+//             <QRCode value={getQrValue()} size={180} />
+//         </div>
+//     </div>
+
+//     <div className="space-y-2">
+//         <Label className="text-zinc-400">Lightning Invoice</Label>
+//         <div className="flex flex-col items-center gap-2">
+//             <div className="bg-zinc-900 p-3 rounded-lg flex-1 text-sm break-all">
+//                 lnbc1500n1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspk28uwq
+//             </div>
+//             <button
+//                 onClick={copyAddress}
+//                 className="w-full py-2 flex items-center justify-center bg-zinc-900 rounded-lg text-zinc-400 hover:text-white text-sm"
+//             >
+//                 {copiedAddress
+//                     ? <>
+//                         <CheckCircle2 className="h-3 w-3 text-green-400 mr-2" />
+//                         <span>Copied</span>
+//                     </>
+//                     : <>
+//                         <Copy className="h-3 w-3 mr-2" />
+//                         <span>Copy</span>
+//                     </>
+//                 }
+//             </button>
+//         </div>
+//     </div>
+// </div>

@@ -3,14 +3,12 @@
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { LockIcon, AlertCircle } from "lucide-react"
 
 
 export default function WalletUnlock({ onUnlock }) {
     const [password, setPassword] = useState("")
-    const [rememberDevice, setRememberDevice] = useState(false)
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 

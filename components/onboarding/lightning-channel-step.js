@@ -38,7 +38,7 @@ export default function LightningChannelStep() {
             <div className="space-y-6">
                 <div className="space-y-2">
                     <Label htmlFor="amount" className="text-zinc-400">
-                        Channel Amount (BTC)
+                        Channel Amount (BLZ)
                     </Label>
                     <div className="flex items-center gap-3">
                         <Input
@@ -57,8 +57,8 @@ export default function LightningChannelStep() {
 
                 <div className="space-y-2">
                     <div className="flex justify-between text-xs text-zinc-500">
-                        <span>0.0001 BTC</span>
-                        <span>1 BTC</span>
+                        <span>0.0001 BLZ</span>
+                        <span>1 BLZ</span>
                     </div>
                     <Slider
                         value={sliderValue}
@@ -73,11 +73,11 @@ export default function LightningChannelStep() {
                 <div className="bg-zinc-900 p-4 rounded space-y-2">
                     <div className="flex justify-between text-sm">
                         <span className="text-zinc-400">Channel Fee</span>
-                        <span className="text-white">0.00001 BTC</span>
+                        <span className="text-white">0.00001 BLZ</span>
                     </div>
                     <div className="flex justify-between text-sm">
                         <span className="text-zinc-400">Total</span>
-                        <span className="text-white font-medium">{(amount + 0.00001).toFixed(8)} BTC</span>
+                        <span className="text-white font-medium">{(amount + 0.00001).toFixed(8)} BLZ</span>
                     </div>
                 </div>
             </div>

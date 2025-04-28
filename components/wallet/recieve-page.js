@@ -1,18 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, Copy, CheckCircle2, Share2, Download } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { ArrowLeft, Copy, CheckCircle2 } from "lucide-react"
+import QRCode from "react-qr-code"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import QRCode from "react-qr-code"
+import QRScanner from "@/components/QRScanner"
+import TransactionSuccess from "./transaction-success"
+
 
 export default function ReceivePage({ goBack, walletData }) {
     const [copiedAddress, setCopiedAddress] = useState(false)
-    const [activeTab, setActiveTab] = useState("bitcoin")
     const [amount, setAmount] = useState("")
-    const [note, setNote] = useState("")
+    const [currentStep, setCurrentStep] = useState("1")
 
     const copyAddress = () => {
         navigator.clipboard.writeText(walletData.fullAddress)
@@ -20,19 +20,15 @@ export default function ReceivePage({ goBack, walletData }) {
         setTimeout(() => setCopiedAddress(false), 2000)
     }
 
-    const handleAmountChange = (e) => {
-        const value = e.target.value
-        if (/^(\d*\.?\d*)$/.test(value) || value === "") {
-            setAmount(value)
-        }
+    const onScan = (data) => {
+        console.log(data)
+        setTimeout(() => {
+            setCurrentStep("3")
+        }, 1800);
     }
 
     const getQrValue = () => {
-        if (activeTab === "bitcoin") {
-            return `bitcoin:${walletData.fullAddress}${amount ? `?amount=${amount}` : ""}`
-        } else {
-            return `lightning:${walletData.fullAddress}${amount ? `?amount=${amount}` : ""}`
-        }
+        return `lightning:${walletData.fullAddress}${amount ? `?amount=${amount}` : ""}`
     }
 
     return (
@@ -46,151 +42,98 @@ export default function ReceivePage({ goBack, walletData }) {
                 </div>
             </header>
 
-            {/* Main content */}
-            <main className="flex-1 overflow-y-auto p-4 scrollbar-hide">
-                <Tabs defaultValue="bitcoin" className="w-full" onValueChange={setActiveTab}>
-                    <TabsList className="grid w-full grid-cols-2 bg-transparent border-b border-zinc-800 rounded-none mb-6">
-                        <TabsTrigger
-                            value="bitcoin"
-                            className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:shadow-none rounded-none text-sm"
-                        >
-                            Bitcoin
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="lightning"
-                            className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-white data-[state=active]:shadow-none rounded-none text-sm"
-                        >
-                            Lightning
-                        </TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="bitcoin" className="mt-0 space-y-6">
-                        <div className="flex justify-center">
-                            <div className="bg-white p-4 rounded-lg">
-                                <QRCode value={getQrValue()} size={180} />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label className="text-zinc-400">Bitcoin Address</Label>
-                            <div className="flex items-center gap-2">
-                                <div className="bg-zinc-900 p-3 rounded-lg flex-1 text-sm break-all">{walletData.fullAddress}</div>
-                                <button
-                                    onClick={copyAddress}
-                                    className="w-10 h-10 flex items-center justify-center bg-zinc-900 rounded-lg text-zinc-400 hover:text-white"
-                                >
-                                    {copiedAddress ? <CheckCircle2 className="h-5 w-5 text-green-400" /> : <Copy className="h-5 w-5" />}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="amount" className="text-zinc-400">
-                                Request Amount (optional)
-                            </Label>
-                            <div className="relative">
-                                <Input
-                                    id="amount"
-                                    placeholder="0.00"
-                                    className="bg-zinc-900 border-zinc-800 text-white pr-12"
-                                    value={amount}
-                                    onChange={handleAmountChange}
-                                />
-                                <div className="absolute right-3 top-2.5 text-zinc-400">BTC</div>
-                            </div>
-                            {amount && (
-                                <div className="text-xs text-zinc-400">
-                                    ≈ $
-                                    {(Number.parseFloat(amount || "0") * 60000).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            <main className="flex-1 overflow-y-auto p-4 no-scrollbar">
+                {
+                    currentStep === "1"
+                        ? <>
+                            <div className="mt-0 space-y-6">
+                                <Label className="text-zinc-500 text-sm">Step 1: <span className="leading-[1.42] text-xs text-zinc-600">Show Your Address</span></Label>
+                                <div className="flex justify-center">
+                                    <div className="bg-white p-4 rounded-lg">
+                                        <QRCode value={getQrValue()} size={150} />
+                                    </div>
                                 </div>
-                            )}
-                        </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="note" className="text-zinc-400">
-                                Note (optional)
-                            </Label>
-                            <Input
-                                id="note"
-                                placeholder="What's this for?"
-                                className="bg-zinc-900 border-zinc-800 text-white"
-                                value={note}
-                                onChange={(e) => setNote(e.target.value)}
-                            />
-                        </div>
-                    </TabsContent>
-
-                    <TabsContent value="lightning" className="mt-0 space-y-6">
-                        <div className="flex justify-center">
-                            <div className="bg-white p-4 rounded-lg">
-                                <QRCode value={getQrValue()} size={180} />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label className="text-zinc-400">Lightning Invoice</Label>
-                            <div className="flex items-center gap-2">
-                                <div className="bg-zinc-900 p-3 rounded-lg flex-1 text-sm break-all">
-                                    lnbc1500n1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspk28uwq
+                                <div className="space-y-2">
+                                    <Label className="text-zinc-400">Your Address</Label>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="bg-zinc-900 p-3 rounded-lg flex-1 text-sm break-all w-full">
+                                            1E2DC906E78969D77AB09146F1123F615FE7C89177E2D1E500215D2D
+                                        </div>
+                                        <button
+                                            onClick={copyAddress}
+                                            className="w-full py-2 flex items-center justify-center bg-zinc-900 rounded-lg text-zinc-400 hover:text-white text-sm"
+                                        >
+                                            {copiedAddress
+                                                ? <>
+                                                    <CheckCircle2 className="h-3 w-3 text-green-400 mr-2" />
+                                                    <span className="text-green-400">Copied!</span>
+                                                </>
+                                                : <>
+                                                    <Copy className="h-3 w-3 mr-2" />
+                                                    <span>Copy</span>
+                                                </>
+                                            }
+                                        </button>
+                                    </div>
                                 </div>
-                                <button
-                                    onClick={copyAddress}
-                                    className="w-10 h-10 flex items-center justify-center bg-zinc-900 rounded-lg text-zinc-400 hover:text-white"
-                                >
-                                    {copiedAddress ? <CheckCircle2 className="h-5 w-5 text-green-400" /> : <Copy className="h-5 w-5" />}
-                                </button>
                             </div>
-                        </div>
+                            <div className="mt-8">
+                                <Label className="text-zinc-500 text-sm mb-2">Step 2: <span className="leading-[1.42] text-xs text-zinc-600">Scan Invoice</span></Label>
+                                <Button className="w-full bg-white hover:bg-zinc-300 text-black rounded-full disabled:bg-zinc-700 disabled:text-zinc-400 cursor-pointer disabled:cursor-not-allowed" onClick={() => setCurrentStep("2")}>
+                                    Scan Lightning Invoice
+                                </Button>
+                            </div>
+                        </>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="lightning-amount" className="text-zinc-400">
-                                Request Amount (optional)
-                            </Label>
-                            <div className="relative">
-                                <Input
-                                    id="lightning-amount"
-                                    placeholder="0.00"
-                                    className="bg-zinc-900 border-zinc-800 text-white pr-12"
-                                    value={amount}
-                                    onChange={handleAmountChange}
-                                />
-                                <div className="absolute right-3 top-2.5 text-zinc-400">BTC</div>
-                            </div>
-                            {amount && (
-                                <div className="text-xs text-zinc-400">
-                                    ≈ $
-                                    {(Number.parseFloat(amount || "0") * 60000).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        : currentStep === "2"
+                            ? <div className="mt-0">
+                                <Label className="text-zinc-500 text-sm">Step 2: <span className="leading-[1.42] text-xs text-zinc-600">Scan Invoice</span></Label>
+
+                                <div className="w-full flex justify-center my-8">
+                                    <QRScanner withText={true} handleRequest={onScan} />
                                 </div>
-                            )}
-                        </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="expiry" className="text-zinc-400">
-                                Expires in
-                            </Label>
-                            <select id="expiry" className="w-full bg-zinc-900 border border-zinc-800 rounded-md p-2 text-white">
-                                <option value="1h">1 hour</option>
-                                <option value="24h" selected>
-                                    24 hours
-                                </option>
-                                <option value="7d">7 days</option>
-                                <option value="30d">30 days</option>
-                            </select>
-                        </div>
-                    </TabsContent>
-                </Tabs>
-            </main>
+                                <Button className="w-full bg-white hover:bg-zinc-300 text-black rounded-full disabled:bg-zinc-700 disabled:text-zinc-400 cursor-pointer disabled:cursor-not-allowed" onClick={() => setCurrentStep("1")}>
+                                    Back to Step 1
+                                </Button>
+                            </div>
 
-            <footer className="p-4 border-t border-zinc-800/50">
-                <div className="flex gap-2">
-                    <Button className="flex-1 bg-white hover:bg-zinc-200 text-black rounded-full">
-                        <Share2 className="h-4 w-4 mr-2" /> Share
-                    </Button>
-                    <Button variant="outline" className="flex-1 border-zinc-700 text-white hover:bg-zinc-800 rounded-full">
-                        <Download className="h-4 w-4 mr-2" /> Save QR
-                    </Button>
+                            : currentStep === "3"
+                                ? <TransactionSuccess amount={50} recipient="1E2DC906E78969D77AB09146F1123F615FE7C89177E2D1E500215D2D" goToHome={goBack} receive={true} />
+                                : null
+                }
+
+                <div className="mt-10">
+                    <ul className="space-y-1">
+                        <li className="flex items-center gap-2 text-xs">
+                            <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                            <span className="text-zinc-500">
+                                Show your address QR to the sender
+                            </span>
+                        </li>
+                        <li className="flex items-center gap-2 text-xs">
+                            <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                            <span className="text-zinc-500">
+                                Sender creates a Lightning Invoice
+                            </span>
+                        </li>
+                        <li className="flex items-center gap-2 text-xs">
+                            <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                            <span className="text-zinc-500">
+                                Click "Scan Lightning Invoice" to open QR Scanner
+                            </span>
+                        </li>
+                        <li className="flex items-center gap-2 text-xs">
+                            <div className="w-1 h-1 rounded-full bg-zinc-600"></div>
+                            <span className="text-zinc-500">
+                                Scan the Invoice to complete the transaction
+                            </span>
+                        </li>
+                    </ul>
                 </div>
-            </footer>
+            </main >
         </>
     )
 }
+

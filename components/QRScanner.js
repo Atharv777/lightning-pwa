@@ -93,7 +93,7 @@ export default function QRScanner({ withText, handleRequest }) {
             handleRequest(data)
 
             if (navigator.vibrate) {
-                navigator.vibrate([200, 100, 200])
+                navigator.vibrate([200])
             }
 
             setTimeout(() => {

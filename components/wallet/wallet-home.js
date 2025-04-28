@@ -88,14 +88,14 @@ export default function WalletHome({ onLock }) {
                             </div>
                         </header>
 
-                        <main className="flex-1 overflow-y-auto p-4  no-scrollbar">
+                        <main className="flex-1 overflow-y-auto p-4 no-scrollbar">
                             <div className="mb-6">
                                 <div className="flex items-center justify-between mb-1">
                                     <div className="flex items-center gap-1 text-xs text-zinc-400">
                                         <span>Wallet Balance</span>
                                     </div>
                                 </div>
-                                <div className="text-white text-3xl font-semibold mb-1">{walletData.balance} BTC</div>
+                                <div className="text-white text-3xl font-semibold mb-1">{walletData.balance} BLZ</div>
                                 <div className="text-zinc-400 text-sm">${walletData.usdBalance.toLocaleString()}</div>
 
                                 <div className="flex items-center gap-1 mt-2 text-xs text-zinc-400">
@@ -107,7 +107,7 @@ export default function WalletHome({ onLock }) {
                             </div>
 
                             <div className="mb-6">
-                                <div className="grid grid-cols-3 gap-3 text-white">
+                                <div className="grid grid-cols-2 gap-3 text-white">
                                     <button
                                         onClick={() => navigateTo("send")}
                                         className="flex flex-col items-center justify-center bg-zinc-900/70 hover:bg-zinc-800/70 transition-colors rounded-xl py-4 border border-zinc-800/50"
@@ -126,12 +126,12 @@ export default function WalletHome({ onLock }) {
                                         </div>
                                         <span className="text-xs">Receive</span>
                                     </button>
-                                    <button className="flex flex-col items-center justify-center bg-zinc-900/70 hover:bg-zinc-800/70 transition-colors rounded-xl py-4 border border-zinc-800/50">
+                                    {/* <button className="flex flex-col items-center justify-center bg-zinc-900/70 hover:bg-zinc-800/70 transition-colors rounded-xl py-4 border border-zinc-800/50">
                                         <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center mb-2">
                                             <Repeat className="h-4 w-4 text-white" />
                                         </div>
                                         <span className="text-xs">Swap</span>
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
 
@@ -147,7 +147,7 @@ export default function WalletHome({ onLock }) {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-sm font-medium">{walletData.lightningBalance} BTC</div>
+                                        <div className="text-sm font-medium">{walletData.lightningBalance} BLZ</div>
                                         <div className="text-xs text-zinc-400">${walletData.lightningUsdBalance}</div>
                                     </div>
                                 </div>
@@ -181,16 +181,16 @@ export default function WalletHome({ onLock }) {
                                     <div className="space-y-2">
                                         <div className="flex items-center justify-between p-3 bg-zinc-900/30 rounded-lg">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-xs">
-                                                    ₿
+                                                <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-white font-bold text-base">
+                                                    ⚡
                                                 </div>
                                                 <div>
-                                                    <div className="font-medium text-sm">Bitcoin</div>
-                                                    <div className="text-xs text-zinc-400">BTC</div>
+                                                    <div className="font-medium text-sm">Blaze Coin</div>
+                                                    <div className="text-xs text-zinc-400">BLZ</div>
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-sm">{walletData.balance} BTC</div>
+                                                <div className="text-sm">{walletData.balance} BLZ</div>
                                                 <div className="text-xs text-zinc-400">${walletData.usdBalance}</div>
                                             </div>
                                         </div>
