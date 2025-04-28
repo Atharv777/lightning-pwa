@@ -1,7 +1,7 @@
-import { Inter, Montserrat } from "next/font/google";
+import { Montserrat, Geist } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const inter = Geist({
     variable: "--font-inter",
     subsets: ["latin"],
 });

@@ -28,7 +28,7 @@ export default function WalletPage() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-zinc-950 md:p-4 text-white">
-            <div className="w-full md:max-w-sm mx-auto bg-zinc-950 rounded-xl overflow-hidden flex flex-col max-h-[100vh] md:max-h-[650px] md:h-[90vh] border border-zinc-800/50">
+            <div className="w-full md:max-w-sm mx-auto bg-zinc-950 rounded-xl overflow-hidden flex flex-col h-screen max-h-[100vh] md:max-h-[650px] md:h-[90vh] border border-zinc-800/50">
                 {isUnlocked
                     ? <WalletHome onLock={() => setIsUnlocked(false)} />
                     : <WalletUnlock onUnlock={() => setIsUnlocked(true)} />

@@ -5,7 +5,7 @@ import jsQR from "jsqr"
 import { motion, AnimatePresence } from "framer-motion"
 import { Scan, Check, Camera } from "lucide-react"
 
-export default function QRScanner({ withText }) {
+export default function QRScanner({ withText, handleRequest }) {
     const videoRef = useRef(null)
     const canvasRef = useRef(null)
     const [result, setResult] = useState("")
@@ -17,7 +17,6 @@ export default function QRScanner({ withText }) {
     useEffect(() => {
         setIsClient(true)
 
-        // Register service worker for PWA
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
                 navigator.serviceWorker.register("/sw.js").catch((error) => {
@@ -90,6 +89,8 @@ export default function QRScanner({ withText }) {
         function handleQRCodeDetected(data) {
             setResult(data)
             setScanned(true)
+
+            handleRequest(data)
 
             if (navigator.vibrate) {
                 navigator.vibrate([200, 100, 200])

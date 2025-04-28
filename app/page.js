@@ -3,52 +3,13 @@
 import InstallPWA from "@/components/install-pwa";
 import OnboardingFlow from "@/components/onboarding/onboarding-flow";
 import WalletFlow from "@/components/wallet/wallet-flow";
+import { decryptPrivateKey } from "@/lib/encrypt-decrypt";
 import { useEffect, useState } from "react";
 
 export default function Home() {
 
     const [loading, setLoading] = useState(true)
     const [privateKey, setPrivateKey] = useState(null)
-
-    async function decryptPrivateKey(encryptedJson, password, crypto) {
-        try {
-            const enc = new TextEncoder();
-            const dec = new TextDecoder();
-
-            const encrypted = JSON.parse(encryptedJson);
-            const salt = new Uint8Array(encrypted.salt);
-            const iv = new Uint8Array(encrypted.iv);
-            const ciphertext = new Uint8Array(encrypted.ciphertext);
-
-            const passwordKey = await crypto.subtle.importKey(
-                'raw',
-                enc.encode(password),
-                { name: 'PBKDF2' },
-                false,
-                ['deriveKey']
-            );
-
-            const aesKey = await crypto.subtle.deriveKey(
-                { name: 'PBKDF2', salt, iterations: 250000, hash: 'SHA-256' },
-                passwordKey,
-                { name: 'AES-GCM', length: 256 },
-                false,
-                ['decrypt']
-            );
-
-            const decrypted = await crypto.subtle.decrypt(
-                { name: 'AES-GCM', iv, },
-                aesKey,
-                ciphertext
-            );
-
-            return dec.decode(decrypted);
-        }
-        catch (e) {
-            console.info(e)
-            return null
-        }
-    }
 
     const password = "Atharv_777"
 
@@ -57,7 +18,7 @@ export default function Home() {
             setLoading(true)
             const data = localStorage.getItem("user_private_info_encrypted")
             if (data) {
-                const decryptedData = await decryptPrivateKey(data, password, window.crypto)
+                const decryptedData = await decryptPrivateKey(data, password)
                 if (decryptedData) {
                     setPrivateKey(decryptedData)
                     setLoading(false)
