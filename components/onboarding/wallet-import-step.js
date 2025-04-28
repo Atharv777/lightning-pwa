@@ -122,7 +122,7 @@ export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, 
                         wantToScan
                             ? (
                                 <div className="flex flex-col gap-10 justify-center items-center py-10 flex-1 w-[225px] m-auto">
-                                    <QRScanner withText={false} />
+                                    <QRScanner withText={false} handleRequest={handlePrivKeyChange} />
                                     <Button onClick={() => { setWantToScan(false) }} size="sm" className="w-full bg-white hover:bg-zinc-200 text-black"><Pencil /> Enter manually</Button>
                                 </div>
                             )
