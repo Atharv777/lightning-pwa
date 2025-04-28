@@ -34,7 +34,6 @@ export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, 
 
     const handlePrivKeyChange = (value) => {
         setPrivKey(value)
-        setWantToScan(false)
         setTouched(true)
     }
 
@@ -120,7 +119,12 @@ export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, 
                         wantToScan
                             ? (
                                 <div className="flex flex-col gap-10 justify-center items-center py-10 flex-1 w-[225px] m-auto">
-                                    <QRScanner withText={false} handleRequest={handlePrivKeyChange} />
+                                    <QRScanner withText={false} handleRequest={(value) => {
+                                        setPrivKey(value)
+                                        setTimeout(() => {
+                                            setWantToScan(false)
+                                        }, 1800);
+                                    }} />
                                     <Button onClick={() => { setWantToScan(false) }} size="sm" className="w-full bg-white hover:bg-zinc-200 text-black"><Pencil /> Enter manually</Button>
                                 </div>
                             )
