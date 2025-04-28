@@ -21,7 +21,7 @@ export default function WalletUnlock({ onUnlock, setPrivateKey }) {
             if (password.trim() === "") {
                 setError("Please enter your password")
             } else {
-                const data = localStorage.getItem("user_private_info_encrypted")
+                const data = await JSON.parse(localStorage.getItem("user_private_info_encrypted"))
                 const decryptedData = await decryptPrivateKey(data.encrypted_data, password)
                 if (decryptedData && password.trim() === data.password) {
                     setPrivateKey(decryptedData)
