@@ -39,7 +39,7 @@ export default function WalletHome({ onLock }) {
                 </div>
             </header>
 
-            <main className="flex-1 overflow-y-auto p-4 pb-20 no-scrollbar">
+            <main className="flex-1 overflow-y-auto p-4  no-scrollbar">
                 <div className="mb-6">
                     <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-1 text-xs text-zinc-400">
