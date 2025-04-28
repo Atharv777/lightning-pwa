@@ -18,7 +18,7 @@ export default function CompletionStep() {
             </div>
 
             <div className="mt-auto space-y-4">
-                <Button className="w-full bg-white hover:bg-zinc-200 text-black">Open Wallet</Button>
+                <Button className="w-full bg-white hover:bg-zinc-200 text-black" onClick={() => { window.location.reload() }}>Open Wallet</Button>
             </div>
         </div>
     )
