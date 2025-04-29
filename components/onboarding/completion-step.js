@@ -15,6 +15,8 @@ export default function CompletionStep() {
     try {
         localStorage.setItem("balance", "100")
         localStorage.setItem("address", generateRandomAddress())
+
+        window.localStorage.setItem("transactions", "[]")
     } catch {}
     return (
         <div className="flex flex-col flex-1">

@@ -27,6 +27,12 @@ export default function ReceivePage({ goBack, walletData }) {
             "balance",
             (Number(localStorage.getItem("balance")) + amount).toFixed(2)
         )
+        localStorage.setItem("transactions", [...JSON.parse(localStorage.getItem("transactions")), {
+            "type" : "receive",
+            "amount" : amount,
+            "usdAmount" : amount * 0.25,
+            "recipient": data.split("py")[1].split("adrs")[0],
+        }])
         setCurrentStep("3")
     }
 

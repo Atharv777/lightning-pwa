@@ -11,12 +11,12 @@ import QRScanner from "@/components/QRScanner"
 import QRCode from "react-qr-code"
 
 
-function GenerateInvoice(amount) {
+function GenerateInvoice(amount, address) {
     let hex = ""
     for (let i = 0; i < 64; i++) {
       hex += Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
     }
-    return "b"+String(amount)+"z"+hex+"py"
+    return "b"+String(amount)+"z"+hex+"py"+address+"adrs"
 }
 
 export default function SendPage({ goBack, walletData }) {
@@ -90,7 +90,7 @@ export default function SendPage({ goBack, walletData }) {
     const handleGenerateInvoice = () => {
         setIsProcessing(true)
         setTimeout(() => {
-            setInvoiceData(GenerateInvoice(Number(amount)))
+            setInvoiceData(GenerateInvoice(Number(amount), walletData.address))
             setIsProcessing(false)
             setShowInvoiceQR(true)
         }, 2000);
@@ -319,6 +319,12 @@ export default function SendPage({ goBack, walletData }) {
                         ? <footer className="p-4 border-t border-zinc-800/50">
                             <Button onClick={() => {
                                 localStorage.setItem("balance", (Number(localStorage.getItem("balance")) - Number(amount)).toFixed(2))
+                                localStorage.setItem("transactions", [...JSON.parse(localStorage.getItem("transactions")), {
+                                    "type" : "send",
+                                    "amount" : amount,
+                                    "usdAmount" : amount * 0.25,
+                                    "recipient": recipient,
+                                }])
                                 goBack()
                             }} className="w-full bg-white hover:bg-zinc-200 text-black rounded-full">
                                 Back to Wallet
