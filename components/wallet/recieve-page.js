@@ -27,6 +27,9 @@ export default function ReceivePage({ goBack, walletData }) {
             "balance",
             (Number(localStorage.getItem("balance")) + amount).toFixed(2)
         )
+        if (!localStorage.getItem("transactions")) {
+            localStorage.setItem("transactions", "[]")
+        }
         localStorage.setItem("transactions", JSON.stringify([...JSON.parse(localStorage.getItem("transactions")), {
             "type" : "receive",
             "amount" : amount,
