@@ -322,12 +322,12 @@ export default function SendPage({ goBack, walletData }) {
                                 if (!localStorage.getItem("transactions")) {
                                     localStorage.setItem("transactions", "[]")
                                 }
-                                localStorage.setItem("transactions", JSON.stringify([...JSON.parse(localStorage.getItem("transactions")), {
+                                localStorage.setItem("transactions", JSON.stringify([{
                                     "type" : "send",
                                     "amount" : amount,
                                     "usdAmount" : amount * 0.25,
                                     "recipient": recipient,
-                                }]))
+                                }, ...JSON.parse(localStorage.getItem("transactions"))]))
                                 goBack()
                             }} className="w-full bg-white hover:bg-zinc-200 text-black rounded-full">
                                 Back to Wallet

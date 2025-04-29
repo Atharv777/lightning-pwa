@@ -30,12 +30,12 @@ export default function ReceivePage({ goBack, walletData }) {
         if (!localStorage.getItem("transactions")) {
             localStorage.setItem("transactions", "[]")
         }
-        localStorage.setItem("transactions", JSON.stringify([...JSON.parse(localStorage.getItem("transactions")), {
+        localStorage.setItem("transactions", JSON.stringify([{
             "type" : "receive",
             "amount" : amount,
             "usdAmount" : amount * 0.25,
             "recipient": data.split("py")[1].split("adrs")[0],
-        }]))
+        }, ...JSON.parse(localStorage.getItem("transactions"))]))
         setCurrentStep("3")
     }
 
