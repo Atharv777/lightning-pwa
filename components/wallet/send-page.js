@@ -284,7 +284,7 @@ export default function SendPage({ goBack, walletData }) {
                                             <div className="flex justify-between text-sm">
                                                 <span className="text-zinc-400">Total</span>
                                                 <span className="text-white font-medium">
-                                                    {amount ? (getBLZAmount() + feeLevels[feeLevel].fee).toFixed(8) : "0.00000000"} BLZ
+                                                    {amount ? (getBLZAmount()).toFixed(8) : "0.00000000"} BLZ
                                                 </span>
                                             </div>
                                         </div>
