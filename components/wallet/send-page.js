@@ -319,12 +319,12 @@ export default function SendPage({ goBack, walletData }) {
                         ? <footer className="p-4 border-t border-zinc-800/50">
                             <Button onClick={() => {
                                 localStorage.setItem("balance", (Number(localStorage.getItem("balance")) - Number(amount)).toFixed(2))
-                                localStorage.setItem("transactions", [...JSON.parse(localStorage.getItem("transactions")), {
+                                localStorage.setItem("transactions", JSON.stringify([...JSON.parse(localStorage.getItem("transactions")), {
                                     "type" : "send",
                                     "amount" : amount,
                                     "usdAmount" : amount * 0.25,
                                     "recipient": recipient,
-                                }])
+                                }]))
                                 goBack()
                             }} className="w-full bg-white hover:bg-zinc-200 text-black rounded-full">
                                 Back to Wallet

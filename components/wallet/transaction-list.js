@@ -9,7 +9,8 @@ export default function TransactionList() {
         if (transactions == null) {
             transactions = []
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         window.localStorage.setItem("transactions", "[]")
     }
     if (transactions.length === 0) {
