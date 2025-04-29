@@ -2,8 +2,7 @@
 
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Send, QrCode, Repeat, Settings, Zap, ChevronDown, ExternalLink, Copy, CheckCircle2 } from "lucide-react"
-import WalletNavigation from "./wallet-navigation"
+import { Send, QrCode, Copy, CheckCircle2 } from "lucide-react"
 import TransactionList from "./transaction-list"
 import { AnimatePresence, motion } from "framer-motion"
 import SendPage from "./send-page"
@@ -15,15 +14,23 @@ export default function WalletHome({ onLock }) {
     const [currentView, setCurrentView] = useState("home")
     const [slideDirection, setSlideDirection] = useState(1)
 
-    const walletData = {
+    var walletData = {
         balance: 0.00342,
         usdBalance: 205.2,
         address: "bc1q8c6t...7mdj",
         fullAddress: "bc1q8c6tjgpqrcd52rh7nv4e2c3xed7mdj",
         lightningBalance: 0.00125,
         lightningUsdBalance: 75.0,
-        networkFee: 0.00001,
     }
+
+    try {
+        walletData.balance = Number(localStorage.getItem("balance"))
+        walletData.lightningBalance = walletData.balance
+        walletData.usdBalance = walletData.balance * 0.25
+        walletData.lightningUsdBalance = walletData.usdBalance
+        walletData.address = "G"+localStorage.getItem("address").toUpperCase()
+        walletData.fullAddress = walletData.address
+    } catch {}
 
     const copyAddress = () => {
         navigator.clipboard.writeText(walletData.fullAddress)
@@ -50,7 +57,7 @@ export default function WalletHome({ onLock }) {
             x: 0,
             opacity: 1,
             transition: {
-                x: { type: "spring", stiffness: 300, damping: 30 },
+                x: { type: "spring", stiffness: 400, damping: 30 },
                 opacity: { duration: 0.2 },
             },
         },
@@ -58,7 +65,7 @@ export default function WalletHome({ onLock }) {
             x: direction > 0 ? "-100%" : "100%",
             opacity: 0,
             transition: {
-                x: { type: "spring", stiffness: 300, damping: 30 },
+                x: { type: "spring", stiffness: 400, damping: 30 },
                 opacity: { duration: 0.2 },
             },
         }),
@@ -159,7 +166,7 @@ export default function WalletHome({ onLock }) {
                                         </div>
 
                                         <div className="text-center py-6">
-                                            <p className="text-zinc-500 text-xs">No other assets supported byt this wallet</p>
+                                            <p className="text-zinc-500 text-xs">No other assets supported by this wallet</p>
                                         </div>
                                     </div>
                                 </TabsContent>

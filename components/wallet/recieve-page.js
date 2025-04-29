@@ -21,12 +21,16 @@ export default function ReceivePage({ goBack, walletData }) {
     }
 
     const onScan = (data) => {
-        console.log(data)
+        let amount = Number(data.split("b")[1].split("z")[0])
+        window.localStorage.setItem(
+            "balance",
+            (Number(localStorage.getItem("balance")) + amount).toFixed(2)
+        )
         setCurrentStep("3")
     }
 
     const getQrValue = () => {
-        return `lightning:${walletData.fullAddress}${amount ? `?amount=${amount}` : ""}`
+        return walletData.fullAddress
     }
 
     return (
@@ -56,7 +60,7 @@ export default function ReceivePage({ goBack, walletData }) {
                                     <Label className="text-zinc-400">Your Address</Label>
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="bg-zinc-900 p-3 rounded-lg flex-1 text-sm break-all w-full">
-                                            1E2DC906E78969D77AB09146F1123F615FE7C89177E2D1E500215D2D
+                                            {walletData.address}
                                         </div>
                                         <button
                                             onClick={copyAddress}
@@ -98,7 +102,7 @@ export default function ReceivePage({ goBack, walletData }) {
                             </div>
 
                             : currentStep === "3"
-                                ? <TransactionSuccess amount={50} recipient="1E2DC906E78969D77AB09146F1123F615FE7C89177E2D1E500215D2D" goToHome={goBack} receive={true} />
+                                ? <TransactionSuccess amount={50} recipient={walletData.address} goToHome={goBack} receive={true} />
                                 : null
                 }
 

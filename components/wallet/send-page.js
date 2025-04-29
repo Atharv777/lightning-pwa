@@ -11,6 +11,13 @@ import QRScanner from "@/components/QRScanner"
 import QRCode from "react-qr-code"
 
 
+function GenerateInvoice(amount) {
+    let hex = ""
+    for (let i = 0; i < 64; i++) {
+      hex += Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    }
+    return "b"+String(amount)+"z"+hex+"py"
+}
 
 export default function SendPage({ goBack, walletData }) {
     const [amount, setAmount] = useState("")
@@ -44,12 +51,12 @@ export default function SendPage({ goBack, walletData }) {
 
     const getBLZAmount = () => {
         if (!amount) return 0
-        return amountUnit === "BLZ" ? Number.parseFloat(amount) : Number.parseFloat(amount) / 60000
+        return amountUnit === "BLZ" ? Number.parseFloat(amount) : Number.parseFloat(amount) / 0.25
     }
 
     const getUsdAmount = () => {
         if (!amount) return 0
-        return amountUnit === "BLZ" ? Number.parseFloat(amount) * 60000 : Number.parseFloat(amount)
+        return amountUnit === "BLZ" ? Number.parseFloat(amount) * 0.25 : Number.parseFloat(amount)
     }
 
     const isValidAmount = () => {
@@ -83,7 +90,7 @@ export default function SendPage({ goBack, walletData }) {
     const handleGenerateInvoice = () => {
         setIsProcessing(true)
         setTimeout(() => {
-            setInvoiceData("lnbc1500n1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspk28uwq")
+            setInvoiceData(GenerateInvoice(Number(amount)))
             setIsProcessing(false)
             setShowInvoiceQR(true)
         }, 2000);
@@ -147,20 +154,14 @@ export default function SendPage({ goBack, walletData }) {
 
                     {
                         showInvoiceQR
-                            ? <>
+                            ? <div>
                                 <Label className="text-zinc-500 text-sm mt-10 mx-4">Step 3: <span className="leading-[1.42] text-xs text-zinc-600">The receiver scans the invoice below</span></Label>
                                 <div className="flex justify-center mt-5">
                                     <div className="bg-white p-4 rounded-lg">
-                                        <QRCode value={invoiceData} size={250} />
+                                        <QRCode value={invoiceData} size={200} />
                                     </div>
                                 </div>
-                                <Label className="text-zinc-400">Lightning Invoice</Label>
-                                <div className="flex flex-col items-center gap-2">
-                                    <div className="bg-zinc-900 p-3 rounded-lg flex-1 text-sm break-all">
-                                        lnbc1500n1pvjluezpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypqdq5xysxxatsyp3k7enxv4jsxqzpuaztrnwngzn3kdzw5hydlzf03qdgm2hdq27cqv3agm2awhz5se903vruatfhq77w3ls4evs3ch9zw97j25emudupq63nyw24cg27h2rspk28uwq
-                                    </div>
-                                </div>
-                            </>
+                            </div>
                             : <>
                                 <main className="flex-1 overflow-y-auto p-4 no-scrollbar">
                                     <div className="space-y-6">
@@ -316,7 +317,10 @@ export default function SendPage({ goBack, walletData }) {
 
                     {showInvoiceQR
                         ? <footer className="p-4 border-t border-zinc-800/50">
-                            <Button onClick={goBack} className="w-full bg-white hover:bg-zinc-200 text-black rounded-full">
+                            <Button onClick={() => {
+                                localStorage.setItem("balance", (Number(localStorage.getItem("balance")) - Number(amount)).toFixed(2))
+                                goBack()
+                            }} className="w-full bg-white hover:bg-zinc-200 text-black rounded-full">
                                 Back to Wallet
                             </Button>
                         </footer>
