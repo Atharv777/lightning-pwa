@@ -13,30 +13,28 @@ export default withPWA({
     disable: process.env.NODE_ENV === 'development' ? false : false,
     runtimeCaching: [
         {
-            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/,
-            handler: 'CacheFirst',
+            urlPattern: /^https:\/\/lighitning-pwa\.vercel\.app\/.*$/,
+            handler: 'NetworkFirst',
             options: {
-                cacheName: 'google-fonts-cache',
+                cacheName: 'site-cache',
                 expiration: {
-                    maxAgeSeconds: 60 * 60 * 24 * 365,
+                    maxEntries: 200,
+                    maxAgeSeconds: 7 * 24 * 60 * 60, // 1 week
+                },
+                cacheableResponse: {
+                    statuses: [0, 200],
                 },
             },
         },
         {
-            urlPattern: /\.(?:png|jpg|jpeg|gif|webp|svg|ico)$/,
+            urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/,
             handler: 'CacheFirst',
             options: {
-                cacheName: 'image-cache',
+                cacheName: 'google-fonts',
                 expiration: {
-                    maxEntries: 100,
+                    maxEntries: 30,
+                    maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
                 },
-            },
-        },
-        {
-            urlPattern: /.*\.(?:js|css|html)$/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-                cacheName: 'static-resources',
             },
         },
     ]

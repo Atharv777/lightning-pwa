@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import SendPage from "./send-page"
 import ReceivePage from "./recieve-page"
 
-export default function WalletHome({ onLock }) {
+export default function WalletHome({ onLock, publicprivatekey }) {
     const [activeTab, setActiveTab] = useState("assets")
     const [copiedAddress, setCopiedAddress] = useState(false)
     const [currentView, setCurrentView] = useState("home")
@@ -17,10 +17,11 @@ export default function WalletHome({ onLock }) {
     var walletData = {
         balance: 0.00342,
         usdBalance: 205.2,
-        address: "bc1q8c6t...7mdj",
-        fullAddress: "bc1q8c6tjgpqrcd52rh7nv4e2c3xed7mdj",
         lightningBalance: 0.00125,
         lightningUsdBalance: 75.0,
+        fullAddress: publicprivatekey.publicKey,
+        address: publicprivatekey.publicKey,
+        privateKey: publicprivatekey.privateKey
     }
 
     try {
@@ -28,9 +29,7 @@ export default function WalletHome({ onLock }) {
         walletData.lightningBalance = walletData.balance
         walletData.usdBalance = walletData.balance * 0.25
         walletData.lightningUsdBalance = walletData.usdBalance
-        walletData.address = "G"+localStorage.getItem("address").toUpperCase()
-        walletData.fullAddress = walletData.address
-    } catch {}
+    } catch { }
 
     const copyAddress = () => {
         navigator.clipboard.writeText(walletData.fullAddress)

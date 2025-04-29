@@ -33,8 +33,9 @@ export default function WalletImportStep({ setPhraseWords, setPrivKey, privKey, 
     }
 
     const handlePrivKeyChange = (value) => {
+        setTouched(true);
+        validateInput();
         setPrivKey(value)
-        setTouched(true)
     }
 
     useEffect(() => {

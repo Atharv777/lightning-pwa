@@ -9,14 +9,15 @@ import { Button } from "@/components/ui/button"
 import { AnimatePresence, motion } from "framer-motion"
 import QRScanner from "@/components/QRScanner"
 import QRCode from "react-qr-code"
+import { signTransaction } from "@/lib/generate-signature"
 
 
 function GenerateInvoice(amount, address) {
     let hex = ""
     for (let i = 0; i < 64; i++) {
-      hex += Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+        hex += Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
     }
-    return "b"+String(amount)+"z"+hex+"py"+address+"adrs"
+    return "b" + String(amount) + "z" + hex + "py" + address + "adrs"
 }
 
 export default function SendPage({ goBack, walletData }) {
@@ -89,11 +90,17 @@ export default function SendPage({ goBack, walletData }) {
 
     const handleGenerateInvoice = () => {
         setIsProcessing(true)
-        setTimeout(() => {
-            setInvoiceData(GenerateInvoice(Number(amount), walletData.address))
+        try {
+            signTransaction(walletData.privateKey, recipient)
+        }
+        catch {
             setIsProcessing(false)
-            setShowInvoiceQR(true)
-        }, 2000);
+        }
+        // setTimeout(() => {
+        //     setInvoiceData(GenerateInvoice(Number(amount), walletData.address))
+        //     setIsProcessing(false)
+        //     setShowInvoiceQR(true)
+        // }, 2000);
     }
 
     const pageVariants = {
@@ -323,9 +330,9 @@ export default function SendPage({ goBack, walletData }) {
                                     localStorage.setItem("transactions", "[]")
                                 }
                                 localStorage.setItem("transactions", JSON.stringify([{
-                                    "type" : "send",
-                                    "amount" : amount,
-                                    "usdAmount" : amount * 0.25,
+                                    "type": "send",
+                                    "amount": amount,
+                                    "usdAmount": amount * 0.25,
                                     "recipient": recipient,
                                 }, ...JSON.parse(localStorage.getItem("transactions"))]))
                                 goBack()

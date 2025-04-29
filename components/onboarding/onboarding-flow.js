@@ -11,6 +11,7 @@ import LightningChannelStep from "./lightning-channel-step"
 import CreatePasswordStep from "./create-password-step"
 
 import { encryptPrivateKey } from "@/lib/encrypt-decrypt"
+import { deriveKeys } from "@/lib/derive-from-secret-phrase"
 
 export default function OnboardingFlow() {
     const [step, setStep] = useState(0)
@@ -69,13 +70,19 @@ export default function OnboardingFlow() {
 
     const nextStep = async () => {
         if (step === 2 && passwordValid) {
-            if (privKey.length >= 64) {
-                const encrypted_data = await encryptPrivateKey(privKey, password)
-                localStorage.setItem("user_private_info_encrypted", JSON.stringify({ encrypted_data, pass: password }))
+            try {
+                if (privKey.length >= 64) {
+                    const encrypted_data = await encryptPrivateKey(privKey, password)
+                    localStorage.setItem("user_private_info_encrypted", JSON.stringify({ encrypted_data, pass: password }))
+                }
+                else {
+                    const privatekey = await deriveKeys(phraseWords.join(" "))
+                    const encrypted_data = await encryptPrivateKey(privatekey, password)
+                    localStorage.setItem("user_private_info_encrypted", JSON.stringify({ encrypted_data, pass: password }))
+                }
             }
-            else {
-                const encrypted_data = await encryptPrivateKey(phraseWords.join(" "), password)
-                localStorage.setItem("user_private_info_encrypted", JSON.stringify({ encrypted_data, pass: password }))
+            catch (e) {
+                console.info(e)
             }
         }
 
