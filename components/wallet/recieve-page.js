@@ -22,6 +22,7 @@ export default function ReceivePage({ goBack, walletData }) {
 
     const onScan = (data) => {
         let amount = Number(data.split("b")[1].split("z")[0])
+        setAmount(amount)
         window.localStorage.setItem(
             "balance",
             (Number(localStorage.getItem("balance")) + amount).toFixed(2)
@@ -102,7 +103,7 @@ export default function ReceivePage({ goBack, walletData }) {
                             </div>
 
                             : currentStep === "3"
-                                ? <TransactionSuccess amount={50} recipient={walletData.address} goToHome={goBack} receive={true} />
+                                ? <TransactionSuccess amount={amount} recipient={walletData.address} goToHome={goBack} receive={true} />
                                 : null
                 }
 
